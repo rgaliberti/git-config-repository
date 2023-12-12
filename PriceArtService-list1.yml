@@ -1,0 +1,36 @@
+#Application Config
+application:
+  listino: 1
+  sconto: 10
+  
+# ==============================================================
+# = Actuator Parameters
+# ==============================================================
+management:
+  info:
+    env:
+      enabled: true
+    git:
+      enabled: true
+      mode: full
+  endpoint:
+    health:
+      show-details: WHEN_AUTHORIZED
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,refresh
+
+# ==============================================================
+# = Actuator Info
+# ==============================================================
+info:
+  assistenza:
+    nome: Nicola La Rocca
+    mail: nicola_larocca@xantrix.it
+    telefono: 334-12345678
+    orario: 9-20
+  nome:
+    nome-app: PriceArt Web Service - Autenticazione OAUTH2 keycloak
+  profilo: GitHub
+  variante: promo
