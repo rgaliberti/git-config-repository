@@ -1,0 +1,121 @@
+# ==============================================================
+# = PriceArt Web Service - Profilo std1
+# ==============================================================
+application:
+  listino: 1
+  sconto: 0
+ 
+spring:
+# ==============================================================
+# = Proprietà Fonte Dati PostgreSQL
+# ==============================================================
+  datasource:
+    initialization-mode: always
+    password: 123_Stella
+    platform: postgres
+    url: jdbc:postgresql://localhost:5433/AlphaShop
+    username: postgres
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    show-sql: true
+# ==============================================================
+# = ZipKin parameters
+# ==============================================================
+  zipkin:
+    baseUrl: http://localhost:9411/
+    sender:
+      type: web
+      #type: rabbit 
+# ==============================================================
+# = Sleuth parameters
+# ==============================================================
+  sleuth:
+    sampler:
+      probability: 1.0
+    traceId128: false
+# ==============================================================
+# = Proprietà RabbitMQ
+# ==============================================================      
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: rabbitmq
+    password: rabbitmq
+
+# ==============================================================
+# = Eureka Properties  
+# = Nota: prima di attivare il servizio servono tre heartbeat
+# ==============================================================
+eureka:
+# ==============================================================
+# = Impostazioni Instance
+# ============================================================== 
+  instance:
+    #intervallo di attesa prima della rimozione del servizio (def 90 sec)
+    lease-expiration-duration-in-seconds: 60
+    #intervallo di invio dell'heartbeat (def 30 sec)
+    leaseRenewalIntervalInSeconds: 15
+    #id di identificazione dell'istanza
+    instanceId: ${server.port}-${spring.application.name}-${seq}
+    #registrazione per indirizzo ip (defualt hostname)
+    preferIpAddress: true
+# ==============================================================
+# = Impostazioni Client
+# ============================================================== 
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+     defaultZone: ${EUREKA_URL:http://user:BimBumBam_2018@localhost:8761/eureka/}
+    #time out di connessione in secondi al server Eureka (def 5 sec) 
+    eureka-server-connect-timeout-seconds: 8
+    
+# ==============================================================
+# = Actuator Parameters
+# Metodo POST con url: /actuator/refresh
+# Metodo POST con url: /actuator/bus-refresh 
+# ==============================================================
+management:
+  endpoint:
+    health:
+      show-details: WHEN_AUTHORIZED
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,refresh,bus-refresh,hystrix.stream
+                
+# ==============================================================
+# = Livello Log di Sicurezza
+# ==============================================================  
+logging:
+  level:
+    root: INFO
+    org.springframework.cloud: ERROR
+
+    
+# ==============================================================
+# = Proprietà Servizio gestUser
+# ==============================================================           
+gestuser:
+  password: BimBumBam_2018
+  srvUrl: http://localhost:8019/api/utenti/cerca/userid/
+  userId: ReadUser
+  
+# ==============================================================
+# = Parametri Sicurezza JWT 
+# ==============================================================
+sicurezza:
+    uri: /auth
+    refresh: /refresh
+    header: Authorization
+    prefix: Bearer 
+    expiration: 86400
+    secret: 123_Stella
+

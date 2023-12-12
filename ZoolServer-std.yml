@@ -1,0 +1,141 @@
+# ==============================================================
+# = Zuul Server - Profilo std 
+# ==============================================================
+
+spring:
+# ==============================================================
+# = Cloud Parameters
+# ==============================================================
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
+# ==============================================================
+# = ZipKin parameters
+# ==============================================================
+  zipkin:
+    baseUrl: http://localhost:9411/
+    sender:
+      type: web
+      #type: rabbit 
+# ==============================================================
+# = Sleuth parameters
+# ==============================================================
+  sleuth:
+    sampler:
+      probability: 1.0
+    traceId128: false
+
+# ==============================================================
+# = Zuul Parameters
+# ============================================================== 
+zuul:
+  host:
+    connect-timeout-millis: 20000
+    socket-timeout-millis: 60000
+  prefix: /gateway
+  stripPrefix: true
+  ignoredServices: '*'
+  ignored-headers: Access-Control-Allow-Credentials, Access-Control-Allow-Origin
+# ==============================================================
+# = Route Parameters
+# ==============================================================
+  routes:
+    articoli:
+      path: /getart/**
+      serviceId: ProductsWebService
+      sensitive-headers: Cookie,Set-Cookie
+    prezzi: 
+      path: /getprice/**
+      serviceId: PriceArtWebService
+      sensitive-headers: Cookie,Set-Cookie
+    promo: 
+      path: /getpromo/**
+      serviceId: PromoWebService
+      sensitive-headers: Cookie,Set-Cookie
+    authserver:
+      path: /**
+      service-id: AUTH-SERVICE
+      sensitive-headers: Cookie,Set-Cookie
+
+# ==============================================================
+# = Timeout parameters
+# ==============================================================
+ProductsWebService:
+  ribbon:
+   ReadTimeout: 60000
+   ConnectTimeout: 20000
+   MaxTotalHttpConnections: 500
+   MaxConnectionsPerHost: 100  
+PriceArtWebService:
+  ribbon:
+   ReadTimeout: 30000
+   ConnectTimeout: 20000
+PromoWebService:
+  ribbon:
+   ReadTimeout: 30000
+   ConnectTimeout: 20000
+AUTH-SERVICE:
+  ribbon:
+   ReadTimeout: 30000
+   ConnectTimeout: 20000
+ 
+   
+hystrix:
+  command:
+    ProductsWebService:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 90000
+  
+# ==============================================================
+# = Logs Parameters
+# ==============================================================        
+logging:
+  level:
+    org.springframework.cloud: DEBUG
+    org.springframework.security: DEBUG
+
+# ==============================================================
+# = Actuator Parameters
+# ==============================================================
+management:
+  info:
+    git:
+      mode: full
+  endpoint:
+    health:
+      show-details: WHEN_AUTHORIZED
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,routes,filters
+        
+# ==============================================================
+# = Actuator Info
+# ==============================================================
+info:
+  assistenza:
+    nome: "Nicola La Rocca"
+  nome:
+    nome-app: "Zuul Server - Versione JWT"    
+            
+            
+# ==============================================================
+# = sicurezza Properties 
+# ==============================================================
+sicurezza:
+    uri: /gateway/auth
+    header: Authorization
+    prefix: Bearer 
+    expiration: 86400
+    secret: 123_Stella          
+    
+# ==============================================================
+# = Proprietà Servizio gestUser
+# ==============================================================          
+gestuser:
+  password: BimBumBam_2018
+  srvUrl: http://localhost:8019/api/utenti/cerca/userid/
+  userId: ReadUser  
